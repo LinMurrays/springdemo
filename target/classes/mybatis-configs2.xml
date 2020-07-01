@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 配置文件 -->
+    <!-- 配置初始化环境(连接) -->
+    <properties resource="configs2.properties"/>
+    <settings>
+        <!-- 日志默认配置 -->
+        <setting name="logImpl" value="log4j"/>
+        <!-- 配置全局延迟加载 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- 设置按需加载(配合上面的延迟加载属性实现) -->
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <!-- 启用二级缓存 -->
+        <setting name="cacheEnabled" value="true"/>
+        <!-- 一级缓存设置(默认开启且是session类型) -->
+        <setting name="localCacheScope" value="SESSION"/>
+    </settings>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbcDriver}"/>
+                <property name="url" value="${jdbcUrl}"/>
+                <property name="username" value="${jdbcUser}"/>
+                <property name="password" value="${jdbcPassword}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!-- 配置mapper文件路径 -->
+    <mappers>
+        <mapper resource="mapper/ProjectDaoMapper02.xml"/>
+        <mapper resource="mapper/OrderDaoMapper02.xml"/>
+    </mappers>
+</configuration>

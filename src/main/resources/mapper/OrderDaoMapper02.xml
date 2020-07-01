@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 核心映射文件 -->
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatisdemo02.com.jt.module.dao.OrderDao">
+	
+	<insert id="insertObjects" parameterType="mybatisdemo02.com.jt.module.entity.Order">
+	<selectKey keyProperty="id" resultType="string" order="BEFORE">
+  	 select replace(uuid(),'-','')
+  	</selectKey>
+	insert into orders (id,price,state,projectId,createdTime)
+	values(#{id},#{price},#{state},#{projectId},now())
+	</insert>
+	
+	
+	<!-- 表关联查询中的内连接：查询订单时，将订单所归属的项目也查询出来
+		 为什么resultType使用map？因为查询结果不只有Object
+	 -->
+	<select id="findObjectByid" resultType="map">
+		select o.*,p.name from orders o join projects p on o.projectId=p.id where o.id=#{id}
+	</select>
+	
+	
+	   <!-- 在resultMap元素中定义映射规则 -->
+   <resultMap type="mybatisdemo02.com.jt.module.entity.OrderResult" id="orderResultMap">
+        <id property="id" column="id"/>
+         <result property="state" column="state"/>
+         <result property="price" column="price"/>
+         <result property="createdTime" column="createdTime"/>
+         <association property="project" javaType="mybatisdemo02.com.jt.module.entity.Project">
+             <id property="id" column="projectId"/>
+             <result property="name" column="name"/>
+         </association>
+   </resultMap>   
+	<select id="findOrderResultById" resultMap="orderResultMap">
+		select o.*,p.name from orders o join projects p on
+		 o.projectId=p.id where o.id=#{id}
+	</select>
+	
+	
+	<!-- 定义结果映射 -->
+	 <resultMap type="mybatisdemo02.com.jt.module.entity.OrderResult" id="orderWithMap">
+      <!-- 定义关联查询映射 -->
+      <association property="project" column="projectId" 
+      select="com.jt.module.dao.ProjectDao.findObjectById"
+      fetchType="lazy">
+      </association>
+   </resultMap>  
+	<select id="findOrderResultWithId" resultMap="orderWithMap">
+	select * from orders where id = #{id}
+	</select>
+	
+	
+	
+	
+	
+	
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 核心映射文件 -->
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatisdemo01.com.jt.module.dao.ProjectDao">
+	<!-- 
+		分析：select元素对应的sql查询结果如何映射内存中Project
+		1.通过反射构建类的对象(Class.forName("com.jt.module.entity.Project"))
+		2.基于查询结果的字段名查找pojo对象中对应的set方法
+		3假如pojo对象中有对应的set方法，则通过反射调用set方法，则通过反射调用
+		4.S假如没有对应的set方法，则基于字段查找对应属性，有则通过反射直接赋值
+	 -->
+	<select id="findObjects" resultType="mybatisdemo01.com.jt.module.entity.Project">
+		select*from projects
+	</select>
+	<select id="findObjectById" parameterType="int" resultType="mybatisdemo01.com.jt.module.entity.Project">
+		select*from projects where id= #{id}
+	</select>
+	<!-- 按条件执行分页查询 -->
+	<select id="findPageObjects"  resultType="mybatisdemo01.com.jt.module.entity.Project">
+		select*from projects where name like concat("%",#{name},"%") limit #{startIndex},#{pageSize}
+	</select>
+	<insert id="insertObject" parameterType="mybatisdemo01.com.jt.module.entity.Project">
+		insert into projects (name,note,createdTime)values(#{name},#{note},#{createdTime})
+	</insert>
+	<!-- 参数类型也可以是String，但在Dao里的方法要设置参数注解 -->
+	<insert id="insertinto2" parameterType="String">
+		insert into projects  (name,note)
+         values
+         (#{name},#{note})
+	</insert>
+	
+	<update id="updateObject" parameterType="mybatisdemo01.com.jt.module.entity.Project">
+			update projects set name=#{name},note=#{note} where id=#{id}
+	</update>
+	<delete id="deleteObject">
+		delete from projects where id=#{id}
+	</delete>
+	
+</mapper>

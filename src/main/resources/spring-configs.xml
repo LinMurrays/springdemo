@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-lazy-init="true"
+    xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xsi:schemaLocation="  
+       http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd  
+       http://www.springframework.org/schema/mvc   
+       http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd   
+       http://www.springframework.org/schema/tx   
+       http://www.springframework.org/schema/tx/spring-tx-4.3.xsd   
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+       http://www.springframework.org/schema/util 
+       http://www.springframework.org/schema/util/spring-util-4.3.xsd
+       http://www.springframework.org/schema/data/jpa 
+       http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.3.xsd" >
+   
+   <!-- 告诉spring，由spring来帮我们创建和管理HelloService对象 -->
+   <bean id="helloService" class="springdemo01.beans.HelloService"/>
+
+	<!-- 调用对象的静态方法创建对象 -->   
+   <bean id="calendar" class="java.util.Calendar" 
+   factory-method="getInstance"></bean>
+   
+   <!-- 通过Calendar对象的getTime方法获取date对象（了解） --> 
+   <bean id="date" factory-bean="calendar"
+   factory-method="getTime"/>
+
+	<!-- 通过工厂bean对象创建工厂对象 -->
+	
+	<bean id="objectFactory" class="springdemo01.beans.ObjectFactoryBean"/>
+
+	<bean id="dataSource" class="springdemo01.beans.OpenDataSource"
+      	      scope="prototype"
+      	      init-method="init"
+      	      destroy-method="close"/>
+
+	<bean id="openDataSource01" class="springdemo01.utils.OpenDataSource">
+		<!-- 通过构造方法形式给对象属性赋值  默认按照顺序赋值，类型还有索引可以不写-->
+		<constructor-arg name="sources"
+						 index="0"
+						 type="java.lang.Integer"
+						 value="10"/>
+
+		<!--
+			通过set注入方式为对象属性赋值，但是不是通过直接给对象属性方式复制
+			注意：property元素的name属性值
+			要与对象的set方法有对应关系
+		 -->
+		<property name="driver" value="com.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql:///demo.test"/>
+		<property name="user" value="root"/>
+		<property name="password" value="root"/>
+	</bean>
+
+	<util:properties id="cfg" location="classpath:configs.properties"/>
+
+	<bean id="openDataSource02" class="springdemo01.utils.OpenDataSource">
+		<!-- 通过构造方法形式给对象属性赋值 -->
+		<constructor-arg value="#{cfg.jdbcUrl}"/>
+		<constructor-arg value="#{cfg.jdbcDriver}"/>
+		<constructor-arg value="#{cfg.jdbcUser}"/>
+		<constructor-arg value="#{cfg.jdbcPassword}"/>
+	</bean>
+
+	<!-- 整合c3p0 -->
+	<bean id="c3p0DataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		  destroy-method="close">
+		<property name="DriverClass" value="#{cfg.jdbcDriver}"></property>
+		<property name="User" value="#{cfg.jdbcUser}"></property>
+		<property name="Password" value="#{cfg.jdbcPassword}"></property>
+		<property name="JdbcUrl" value="#{cfg.jdbcUrl}"></property>
+	</bean>
+
+	<!-- 整合Druid连接池 -->
+	<bean id="druidDataSource"
+		  class="com.alibaba.druid.pool.DruidDataSource" init-method="init"
+		  destroy-method="close">
+		<property name="driverClassName" value="#{cfg.jdbcDriver}"></property>
+		<property name="url" value="#{cfg.jdbcUrl}"></property>
+		<property name="username" value="#{cfg.jdbcUser}"></property>
+		<property name="password" value="#{cfg.jdbcPassword}"></property>
+	</bean>
+
+	<!--
+	<bean id="sysConfigDao" class="com.jt.SysConfigDaoimpl">
+		<property name="dataSource" ref="druidDataSource"></property>
+	</bean>
+	 -->
+
+	<bean id="jabcTemplates" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="druidDataSource"></constructor-arg>
+	</bean>
+
+	<!-- 注册Dao对象 -->
+	<bean id="sysConfigDao" class="demo.jt.sys.dao.impl.SysConfigDaoImpl2">
+		<!-- 对象属性值的注入(对象依赖注入) -->
+		<property name="jdbcTemplates" ref="jabcTemplates"></property>
+	</bean>
+
+	<bean id="sysConfigService" class="demo.jt.sys.service.impl.SysConfigServicelmpl">
+		<!-- 对象属性值的注入(对象依赖注入) -->
+		<property name="sysConfigDao" ref="sysConfigDao"></property>
+	</bean>
+
+	<!-- 注册controller对象 -->
+	<bean id="SysConfigController" class="demo.jt.sys.controller.SysConfigController">
+		<!-- 对象属性值的注入(对象依赖注入) -->
+		<property name="sysconfigservice" ref="sysConfigService"></property>
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="typeAliasesPackage" value="springdemo03.com.jt.sys.entity"></property>
+		<property name="dataSource" ref="druidDataSource"/>
+		<property name="mapperLocations" value="classpath*:mapper/*Mapper.xml"></property>
+	</bean>
+
+	<!-- 配置dao接口扫描，由底层创建dao接口的实现类，并为其注入SqlSessionFactory对象
+			 然后会将Dao的实现类存储到IOC容器(Map)，key为类名，首字母小写
+		 -->
+	<bean  class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="BasePackage" value="com.jt.sys.dao"></property>
+		<property name="SqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+
+	<!-- 配置Bean对象,交给spring管理 -->
+	<bean id="xmlHello" class="springmvcdemo01.jt.example.controller.XmlHelloController"></bean>
+
+	<!-- 配置处理器映射(Handler mapping)定义url到controller直接的映射 -->
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map>
+				<entry key="/hello.do" value="xmlHello"></entry>
+			</map>
+		</property>
+	</bean>
+
+	<!-- 配置视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/pages/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+
+	<!-- 配置包的扫描，包含本包以及子包中的本类 -->
+	<context:component-scan base-package="springmvcdemo01.jt"></context:component-scan>
+
+	<!-- 启用Spring MVC默认配置 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+
+
+
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

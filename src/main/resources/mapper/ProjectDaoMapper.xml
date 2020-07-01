@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 核心映射文件 -->
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="springdemo03.com.jt.sys.dao.SysConfigDao">
+	<select id="findById" resultType="SysConfig">
+
+		select*from sys_configs where id=#{id}
+	</select>
+
+
+	
+	
+</mapper>
