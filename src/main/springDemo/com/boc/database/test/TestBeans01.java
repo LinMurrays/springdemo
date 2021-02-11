@@ -1,8 +1,8 @@
-package demo.test;
+package com.boc.database.test;
 
-import demo.jt.sys.controller.SysConfigController;
-import demo.jt.sys.dao.SysConfigDao;
-import demo.jt.sys.entity.SysConfig;
+import com.boc.database.jt.sys.controller.SysConfigController;
+import com.boc.database.jt.sys.dao.SysConfigDao;
+import com.boc.database.jt.sys.entity.SysConfig;
 import org.junit.Test;
 
 public class TestBeans01 extends TestBase {

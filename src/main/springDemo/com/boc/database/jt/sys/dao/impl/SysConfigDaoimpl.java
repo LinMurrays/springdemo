@@ -1,7 +1,7 @@
-package demo.jt.sys.dao.impl;
+package com.boc.database.jt.sys.dao.impl;
 
-import demo.jt.sys.dao.SysConfigDao;
-import demo.jt.sys.entity.SysConfig;
+import com.boc.database.jt.sys.dao.SysConfigDao;
+import com.boc.database.jt.sys.entity.SysConfig;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
