@@ -1,4 +1,4 @@
-package com.boc.database.test;
+package com.test;
 
 import org.junit.After;
 import org.junit.Before;

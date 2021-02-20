@@ -1,4 +1,4 @@
-package com.boc.database.jt.sys.entity;
+package com.jt.sys.entity;
 
 import java.util.Date;
 

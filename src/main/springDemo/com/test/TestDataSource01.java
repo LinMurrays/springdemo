@@ -1,4 +1,4 @@
-package com.boc.database.test;
+package com.test;
 
 
 import com.alibaba.druid.pool.DruidDataSource;

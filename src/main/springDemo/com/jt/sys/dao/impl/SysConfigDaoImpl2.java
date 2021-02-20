@@ -1,7 +1,7 @@
-package com.boc.database.jt.sys.dao.impl;
+package com.jt.sys.dao.impl;
 
-import com.boc.database.jt.sys.dao.SysConfigDao;
-import com.boc.database.jt.sys.entity.SysConfig;
+import com.jt.sys.dao.SysConfigDao;
+import com.jt.sys.entity.SysConfig;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 

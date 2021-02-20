@@ -103,18 +103,18 @@
 	</bean>
 
 	<!-- 注册Dao对象 -->
-	<bean id="sysConfigDao" class="com.boc.database.jt.sys.dao.impl.SysConfigDaoImpl2">
+	<bean id="sysConfigDao" class="com.jt.sys.dao.impl.SysConfigDaoImpl2">
 		<!-- 对象属性值的注入(对象依赖注入) -->
 		<property name="jdbcTemplates" ref="jabcTemplates"></property>
 	</bean>
 
-	<bean id="sysConfigService" class="com.boc.database.jt.sys.service.impl.SysConfigServicelmpl">
+	<bean id="sysConfigService" class="com.jt.sys.service.impl.SysConfigServicelmpl">
 		<!-- 对象属性值的注入(对象依赖注入) -->
 		<property name="sysConfigDao" ref="sysConfigDao"></property>
 	</bean>
 
 	<!-- 注册controller对象 -->
-	<bean id="SysConfigController" class="com.boc.database.jt.sys.controller.SysConfigController">
+	<bean id="SysConfigController" class="com.jt.sys.controller.SysConfigController">
 		<!-- 对象属性值的注入(对象依赖注入) -->
 		<property name="sysconfigservice" ref="sysConfigService"></property>
 	</bean>

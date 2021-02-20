@@ -1,8 +1,8 @@
-package com.boc.database.jt.sys.service.impl;
+package com.jt.sys.service.impl;
 
-import com.boc.database.jt.sys.dao.SysConfigDao;
-import com.boc.database.jt.sys.entity.SysConfig;
-import com.boc.database.jt.sys.service.SysConfigService;
+import com.jt.sys.dao.SysConfigDao;
+import com.jt.sys.entity.SysConfig;
+import com.jt.sys.service.SysConfigService;
 
 public class SysConfigServicelmpl implements SysConfigService {
 

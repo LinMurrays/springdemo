@@ -1,7 +1,7 @@
-package com.boc.database.jt.sys.controller;
+package com.jt.sys.controller;
 
-import com.boc.database.jt.sys.entity.SysConfig;
-import com.boc.database.jt.sys.service.SysConfigService;
+import com.jt.sys.entity.SysConfig;
+import com.jt.sys.service.SysConfigService;
 
 public class SysConfigController {
 	private SysConfigService sysconfigservice;
